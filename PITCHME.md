@@ -2,24 +2,7 @@
 ## @color[#DC143C](Angular推进器)
 ### Angular从原理到应用 - @color[orange](变更检测)
 ---
-### 什么是状态
-- 获取程序的内部状态
-- 使其以某种方式对用户界面可见
-- 状态可以是: objects, Arrays, Primitives...
-- Value Types: string number boolean null undefined
-- Reference Types: array object function
----
-### 当检测发生在运行时
-- 模型中的变化 -> 更新DOM的位置
-- 操作DOM开销昂贵
-- <img style="background: #0c4eb2; padding: 0 1em; width: 300px;text-align: center" src="https://blog.thoughtram.io/images/cd-4.svg">
----
-### 多种解决方案
-- HTTP 请求 + server 重新渲染
-- 区分前后DOM的差异, 渲染不同的部分
-- React Virtual DOM
----
-### 回到Angular
+### 如何触发angular变更
 - 变化什么时候发生?
 ```javascript
 @Component({
@@ -62,10 +45,6 @@ export class ContactsComponent implements OnInit{
 - XHR - 从远端服务器获取数据
 - Timers - setTimeout(), setInterval() 浏览器web api
 +++
-### 触发变更?
-
-#### Asynchronous
----
 ### 谁通知了Angular? 
 - [Zone.js](https://github.com/angular/zone.js#augmenting-a-zones-hook)
 - [NgZone](https://angular.io/api/core/NgZone) implements from Zone.js
@@ -97,29 +76,19 @@ class ApplicationRef {
 - 优点多多
 - unidirectional data flow 单向数据流
 ---
-### 认清单向数据流
-- Angular 分离更新应用程序模型并将视图中模型的状态反映为两个不同的阶段
-- 开发者负责更新应用model,变更检测负责把model的状态反映到视图
-- @Output()会在变更检测执行前运行
-- 单向数据流的意思是指在变更检测期间属性绑定变更的架构
----
 ### BFS OR DFS?
 - 看上去像是奇怪的BFS
-- <img data-src="https://cdn-images-1.medium.com/max/1600/1*XFBDFfCa4Trq_C9M9AZiYQ.gif" src="https://cdn-images-1.medium.com/max/1600/1*XFBDFfCa4Trq_C9M9AZiYQ.gif">
+- <img data-src="https://cdn-images-1.medium.com/max/1600/1*XFBDFfCa4Trq_C9M9AZiYQ.gif" src="https://camo.githubusercontent.com/3814ecb55df12cd257d544f4ec37f61d91178911/68747470733a2f2f63646e2d696d616765732d312e6d656469756d2e636f6d2f6d61782f313630302f312a5846424446664361345472715f43394d39415a6959512e676966">
 ---
 ### 实际上是DFS
 - 当Angular检查当前组件时,它调用子组件上的生命周期钩子,但渲染当前组件DOM
-- <img data-src="https://cdn-images-1.medium.com/max/1600/1*4i4InJWyGkLJfV0IcUsZQw.gif" src="https://cdn-images-1.medium.com/max/1600/1*4i4InJWyGkLJfV0IcUsZQw.gif">
+- <img data-src="https://cdn-images-1.medium.com/max/1600/1*4i4InJWyGkLJfV0IcUsZQw.gif" src="https://camo.githubusercontent.com/36d2d157bba9f01c23d4d2f9d54f8475dc9189fa/68747470733a2f2f63646e2d696d616765732d312e6d656469756d2e636f6d2f6d61782f313630302f312a346934496e4a5779476b4c4a665630496355735a51772e676966">
 ---
 ### NgDoCheck钩子和变更检测
 - 更新子组件的属性
 - 调用位于子组件中的NgDoCheck生命周期钩子
 - 更新当前组件的DOM
 - 向子组件执行变更检测
----
-### 对ngDoCheck的误会
-- stackoverflow上常见的疑问
-- @color[blue](为什么在OnPush策略下,即使组件没有属性更新,ngOnCheck钩子仍然被调用了?变更检测是怎么回事?)
 ---
 ### 和变更检测最相关的一些
 - 更新所有子组件/指令的绑定属性
@@ -218,11 +187,6 @@ var data2 = data.set('name', 'Tommy');
 
 data === data2 // false reference are different
 ```
----
-### 优化?
-- 变更检测可以跳过某些component子树
-- @Input()属性immutable
-- 需要告诉angular 
 ---
 ### 比如
 - OnPush Strategy
@@ -323,15 +287,6 @@ export class AppComponent implements OnInit{
 }
 ```
 ---
-### 变更检测的种类
-- CheckOnce(move to changeDetectorRef)
-- Checked(Depreciated)
-- CheckAlways(Depreciated)
-- Detached(move to changeDetectorRef)
-- OnPush(In using)
-- Default(In using)
-- 自己去探索
----
 ### 一个可能会踩到的坑
 - Pure pipe
 ```javascript
@@ -352,7 +307,7 @@ export class AppComponent implements OnInit{
 - Angular创建了一个impure的多个实例，并在每个检测周期调用它定义的转换方法
 - options: 尽量使用immutable type data
 ---
-## ExpressionChangedAfterItHasBeenCheckedError
+<!-- ## ExpressionChangedAfterItHasBeenCheckedError
 - 检查已经传给子组件用来更新其属性的值，是否与当前将要传入的值相同
 - 检查已经传给当前组件用来更新DOM的值，是否与当前将要传入的值相同
 - 递归检查每一个子组件
@@ -366,6 +321,6 @@ export class AppComponent implements OnInit{
 - 异步更新
 - 强制进行变更检测,但是会触发子组件的变更检测,再次导致父组件属性改变
 - 为什么需要这个机制: 组件树稳定
----
+--- -->
 ### 结束之前
 #### Q&A
