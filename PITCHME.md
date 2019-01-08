@@ -144,16 +144,6 @@ export class AppComponent {
 }
 ```
 ---
-### 变更检测效率如何?
-- 感觉上很慢实际上很快 得益于 Angular 生成 VM 友好的代码
-- VM 不喜欢动态不确定的代码 VM的优化得益于 object的单态 而不是多态
-- Angular在运行时 创造变更检测器 - 单态 - 确定的model
-- Don't worry, Angular 帮我们处理好了这些复杂的部分
----
-### 更聪明的变更检测
-- Angular默认的变更检测是自动的
-- 两个好帮手: Immutable(不可变) & Observables
----
 ### 理解可变和不可变(Mutability)
 - reference 没变 但是 property 改变 -> Angular负责地进行检测
 ```javascript
@@ -307,20 +297,5 @@ export class AppComponent implements OnInit{
 - Angular创建了一个impure的多个实例，并在每个检测周期调用它定义的转换方法
 - options: 尽量使用immutable type data
 ---
-<!-- ## ExpressionChangedAfterItHasBeenCheckedError
-- 检查已经传给子组件用来更新其属性的值，是否与当前将要传入的值相同
-- 检查已经传给当前组件用来更新DOM的值，是否与当前将要传入的值相同
-- 递归检查每一个子组件
----
-## 真实场景会更复杂
-- shared service
-- Observables
-- dynamic component initialize 动态组件初始化
----
-## 解决方案
-- 异步更新
-- 强制进行变更检测,但是会触发子组件的变更检测,再次导致父组件属性改变
-- 为什么需要这个机制: 组件树稳定
---- -->
 ### 结束之前
 #### Q&A
